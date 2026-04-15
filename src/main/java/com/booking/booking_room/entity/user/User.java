@@ -43,6 +43,8 @@ public class User extends BaseEntity {
     private String password;
     @Column(nullable = false)
     private String phone;
+    @Column(nullable = false, length = 1000)
+    private String refreshToken;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
