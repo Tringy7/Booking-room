@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import com.booking.booking_room.entity.BaseEntity;
 import com.booking.booking_room.entity.information.Information;
-import com.booking.booking_room.enumarate.room.RoomStatus;
+import com.booking.booking_room.enumerate.room.RoomStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,8 +51,8 @@ public class Room extends BaseEntity {
 
     @OneToOne(mappedBy = "room")
     private RoomPolicy roomPolicy;
-    @OneToOne(mappedBy = "room")
-    private RoomAmenity roomAmenity;
+    @OneToMany(mappedBy = "room")
+    private List<RoomAmenity> roomAmenitys;
 
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings;

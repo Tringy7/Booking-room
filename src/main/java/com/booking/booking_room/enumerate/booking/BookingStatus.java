@@ -1,5 +1,5 @@
-package com.booking.booking_room.enumarate.booking;
+package com.booking.booking_room.enumerate.booking;
 
 public enum BookingStatus {
-    PENDING_PAYMENT,PENDING,CONFIRMED,CANCELLED,COMPLETED,CHECK_IN
+    PENDING_PAYMENT,CONFIRMED,CANCELLED,COMPLETED,CHECK_IN
 }

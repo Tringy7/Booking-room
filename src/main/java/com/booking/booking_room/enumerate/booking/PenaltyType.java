@@ -1,4 +1,4 @@
-package com.booking.booking_room.enumarate.booking;
+package com.booking.booking_room.enumerate.booking;
 
 public enum PenaltyType {
     LATE_CANCELLATION,

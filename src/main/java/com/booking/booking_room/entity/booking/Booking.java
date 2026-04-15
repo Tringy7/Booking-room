@@ -8,7 +8,7 @@ import com.booking.booking_room.entity.BaseEntity;
 import com.booking.booking_room.entity.payment.Payment;
 import com.booking.booking_room.entity.room.Room;
 import com.booking.booking_room.entity.user.User;
-import com.booking.booking_room.enumarate.booking.BookingStatus;
+import com.booking.booking_room.enumerate.booking.BookingStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -42,21 +42,22 @@ public class Booking extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    public String bookingCode;
+    @Column(unique = true)
+    private String bookingCode;
     @Column(nullable = false)
-    public LocalDateTime checkIn;
+    private LocalDateTime checkIn;
     @Column(nullable = false)
-    public LocalDateTime checkOut;
-    public Integer numAdults;
-    public Integer numChildren;
+    private LocalDateTime checkOut;
+    private Integer numAdults;
+    private Integer numChildren;
     @Column(nullable = false)
-    public BigDecimal totalPrice;
+    private BigDecimal totalPrice;
     @Column(nullable = false)
-    public BookingStatus status;
-    @OneToOne(mappedBy = "booking")
-    private Payment payment;
+    private BookingStatus status;
+    @OneToMany(mappedBy = "booking")
+    private List<Payment> payments;
     @Builder.Default
-    public LocalDateTime dateBook = LocalDateTime.now();
+    private LocalDateTime dateBook = LocalDateTime.now();
     @OneToOne(mappedBy = "booking")
     private BookingGuest bookingGuest;
     @OneToOne(mappedBy = "booking")

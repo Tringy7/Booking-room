@@ -6,7 +6,7 @@ import com.booking.booking_room.entity.BaseEntity;
 import com.booking.booking_room.entity.information.Information;
 import com.booking.booking_room.entity.room.Room;
 import com.booking.booking_room.entity.user.User;
-import com.booking.booking_room.enumarate.booking.ReviewStatus;
+import com.booking.booking_room.enumerate.booking.ReviewStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +18,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,6 +56,8 @@ public class Review extends BaseEntity {
     private Information information;
 
     @Column(nullable = false)
+    @Min(1)
+    @Max(5)
     private Integer rating;
 
     @Column(length = 1000)

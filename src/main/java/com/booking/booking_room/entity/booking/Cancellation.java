@@ -1,9 +1,10 @@
 package com.booking.booking_room.entity.booking;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.booking.booking_room.entity.BaseEntity;
-import com.booking.booking_room.enumarate.booking.CancellationStatus;
+import com.booking.booking_room.enumerate.booking.CancellationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -50,15 +52,9 @@ public class Cancellation extends BaseEntity {
     private CancellationPolicy cancellationPolicy;
 
     @Column(nullable = false)
-    private Long refundAmount;
-
-    @Column(nullable = false)
-    private Long penaltyAmount;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private CancellationStatus status;
 
-    @OneToOne(mappedBy = "cancellation")
-    private Penalty penalty;
+    @OneToMany(mappedBy = "cancellation")
+    private List<Penalty> penalties;
 }

@@ -1,7 +1,7 @@
 package com.booking.booking_room.entity.booking;
 
 import com.booking.booking_room.entity.BaseEntity;
-import com.booking.booking_room.enumarate.booking.PenaltyType;
+import com.booking.booking_room.enumerate.booking.PenaltyType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,7 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public class Penalty extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "cancellation_id", nullable = false)
     private Cancellation cancellation;
 
@@ -42,6 +42,9 @@ public class Penalty extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private PenaltyType penaltyType;
+
+    @Column(nullable = false)
+    private Long refundAmount;
 
     private String description;
 

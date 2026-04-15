@@ -1,4 +1,4 @@
-package com.booking.booking_room.enumarate.user;
+package com.booking.booking_room.enumerate.user;
 
 public enum UserStatus {
     ACTIVE, BANNED

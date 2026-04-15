@@ -5,8 +5,9 @@ import java.util.List;
 import com.booking.booking_room.entity.BaseEntity;
 import com.booking.booking_room.entity.booking.Booking;
 import com.booking.booking_room.entity.booking.Review;
-import com.booking.booking_room.enumarate.user.UserRole;
-import com.booking.booking_room.enumarate.user.UserStatus;
+import com.booking.booking_room.entity.payment.Payment;
+import com.booking.booking_room.enumerate.user.UserRole;
+import com.booking.booking_room.enumerate.user.UserStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,7 +39,7 @@ public class User extends BaseEntity {
     private Long id;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 1000)
     private String password;
     @Column(nullable = false)
     private String phone;
@@ -58,4 +59,6 @@ public class User extends BaseEntity {
     private List<Wishlist> wishlists;
     @OneToMany(mappedBy = "reviewer")
     private List<Review> reviews;
+    @OneToMany(mappedBy = "user")
+    private List<Payment> payments;
 }

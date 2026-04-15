@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Model - Hệ thống Đặt Phòng</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f5f5f5;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button:hover {
+            background: #e8e8e8;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+
+        .content {
+            padding: 30px;
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 600px;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .legend h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .legend-item {
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #667eea;
+        }
+
+        .legend-item strong {
+            color: #667eea;
+        }
+
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .domain-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .domain-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .domain-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .domain-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .domain-card li {
+            padding: 5px 0;
+            opacity: 0.9;
+        }
+
+        .domain-card li:before {
+            content: "• ";
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: #1976D2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏨 Domain Model - Hệ thống Đặt Phòng</h1>
+            <p>Mô hình miền cho ứng dụng quản lý đặt phòng Booking Room</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('diagram')">Biểu đồ ERD</button>
+            <button class="tab-button" onclick="switchTab('class')">Biểu đồ Class</button>
+            <button class="tab-button" onclick="switchTab('domains')">Các Domain</button>
+            <button class="tab-button" onclick="switchTab('entities')">Danh sách Entity</button>
+        </div>
+
+        <!-- ER Diagram Tab -->
+        <div id="diagram" class="content active">
+            <div class="info-box">
+                <strong>ℹ️ Thông tin:</strong> Biểu đồ Entity-Relationship (ERD) hiển thị mối quan hệ giữa các bảng
+                trong cơ sở dữ liệu
+            </div>
+            <div class="mermaid">
+                erDiagram
+                USER ||--|| USER_PROFILE : "1..1"
+                USER ||--|| USER_PREFERENCE : "1..1"
+                USER ||--o{ BOOKING : "1..*"
+                USER ||--o{ WISHLIST : "1..*"
+                USER ||--o{ PAYMENT : "1..*"
+                USER ||--o{ REVIEW : "1..*"
+
+                BOOKING ||--|| PAYMENT : "1..1"
+                BOOKING ||--|| BOOKING_GUEST : "1..1"
+                BOOKING ||--|| BOOKING_NOTE : "1..1"
+                BOOKING ||--|| CANCELLATION : "1..0..1"
+                BOOKING ||--o{ REVIEW : "1..*"
+                BOOKING }o--|| ROOM : "*..1"
+
+                ROOM ||--|| ROOM_POLICY : "1..1"
+                ROOM ||--o{ ROOM_AMENITY : "1..*"
+                ROOM ||--o{ REVIEW : "1..*"
+                ROOM }o--|| ROOM_TYPE : "*..1"
+                ROOM }o--|| INFORMATION : "*..1"
+
+                ROOM_TYPE ||--o{ ROOM : "1..*"
+
+                INFORMATION ||--|| CONTACT : "1..1"
+                INFORMATION ||--|| POLICY : "1..1"
+                INFORMATION ||--o{ ROOM : "1..*"
+                INFORMATION ||--o{ REVIEW : "1..*"
+
+                PAYMENT ||--|| BOOKING : "1..1"
+
+                REVIEW }o--|| USER : "*..1"
+                REVIEW }o--|| BOOKING : "*..1"
+                REVIEW }o--|| ROOM : "*..1"
+                REVIEW }o--|| INFORMATION : "*..1"
+
+                WISHLIST ||--o{ WISHLIST_ITEM : "1..*"
+                WISHLIST }o--|| USER : "*..1"
+
+                CANCELLATION ||--|| BOOKING : "1..1"
+                CANCELLATION ||--o{ PENALTY : "1..*"
+                CANCELLATION ||--|| CANCELLATION_POLICY : "*..1"
+            </div>
+            <div class="legend">
+                <h3>📌 Huyền thoại ký hiệu</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <strong>||--|</strong> - Một-một (1:1)
+                    </div>
+                    <div class="legend-item">
+                        <strong>||--o{</strong> - Một-nhiều (1:N)
+                    </div>
+                    <div class="legend-item">
+                        <strong>}o--||</strong> - Nhiều-một (N:1)
+                    </div>
+                    <div class="legend-item">
+                        <strong>}o--o{</strong> - Nhiều-nhiều (N:N)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Class Diagram Tab -->
+        <div id="class" class="content">
+            <div class="info-box">
+                <strong>ℹ️ Thông tin:</strong> Biểu đồ lớp (Class Diagram) hiển thị cấu trúc các lớp, thuộc tính và mối
+                quan hệ thừa kế
+            </div>
+            <div class="mermaid">
+                classDiagram
+                class BaseEntity {
+                #LocalDateTime createdAt
+                #LocalDateTime updatedAt
+                #String createdBy
+                #String updatedBy
+                #Boolean isDeleted
+                }
+
+                class User {
+                -Long id
+                -String email*
+                -String password*
+                -String phone*
+                -UserRole role*
+                -UserStatus userStatus*
+                -List~Booking~ bookings
+                -List~Wishlist~ wishlists
+                -List~Review~ reviews
+                -List~Payment~ payments
+                }
+
+                class UserProfile {
+                -Long id
+                -String firstName
+                -String lastName
+                -Date birthday
+                -String avatar
+                }
+
+                class UserPreference {
+                -Long id
+                -String language
+                -String currency
+                -Boolean emailNotification
+                }
+
+                class Booking {
+                -Long id
+                -String bookingCode*
+                -LocalDateTime checkIn*
+                -LocalDateTime checkOut*
+                -Integer numAdults
+                -Integer numChildren
+                -BigDecimal totalPrice*
+                -BookingStatus status*
+                -LocalDateTime dateBook
+                }
+
+                class BookingGuest {
+                -Long id
+                -String name
+                -String email
+                -String phone
+                }
+
+                class BookingNote {
+                -Long id
+                -String note
+                }
+
+                class Room {
+                -Long id
+                -String roomNumber*
+                -Integer floor*
+                -RoomStatus roomStatus
+                -BigDecimal price*
+                -LocalDateTime lastCleanedAt
+                }
+
+                class RoomType {
+                -Long id
+                -String name
+                -String description
+                -Integer capacity
+                }
+
+                class RoomAmenity {
+                -Long id
+                -String name
+                -String description
+                }
+
+                class RoomPolicy {
+                -Long id
+                -String name
+                -String description
+                }
+
+                class Information {
+                -Long id
+                -String name
+                -String description
+                -String address
+                -Float latitude
+                -Float longitude
+                -Integer starRating
+                -Long totalRoom
+                }
+
+                class Contact {
+                -Long id
+                -String phone
+                -String email
+                -String website
+                }
+
+                class Policy {
+                -Long id
+                -String cancellationPolicy
+                -String checkInPolicy
+                -String checkOutPolicy
+                }
+
+                class Payment {
+                -Long id
+                -BigDecimal amount*
+                -PaymentStatus paymentStatus*
+                -PaymentMethod paymentMethod*
+                -LocalDateTime paymentDate*
+                -String transactionId
+                }
+
+                class Review {
+                -Long id
+                -Integer rating* (1-5)
+                -String title
+                -String comment
+                -LocalDateTime reviewDate*
+                -ReviewStatus status*
+                -Integer helpfulCount*
+                -Integer unhelpfulCount*
+                -String response
+                }
+
+                class Cancellation {
+                -Long id
+                -LocalDateTime cancellationDate
+                -CancellationStatus status
+                -BigDecimal refundAmount
+                }
+
+                class CancellationPolicy {
+                -Long id
+                -String name
+                -Integer daysBeforeCheckIn
+                -Float refundPercentage
+                }
+
+                class Penalty {
+                -Long id
+                -BigDecimal amount
+                -PenaltyType type
+                -String description
+                }
+
+                class Wishlist {
+                -Long id
+                -String name
+                -String description
+                -Integer itemCount
+                }
+
+                class WishlistItem {
+                -Long id
+                -LocalDateTime addedDate
+                }
+
+                BaseEntity <|-- User BaseEntity <|-- UserProfile BaseEntity <|-- UserPreference BaseEntity <|-- Booking
+                    BaseEntity <|-- BookingGuest BaseEntity <|-- BookingNote BaseEntity <|-- Room BaseEntity <|--
+                    RoomType BaseEntity <|-- RoomAmenity BaseEntity <|-- RoomPolicy BaseEntity <|-- Information
+                    BaseEntity <|-- Contact BaseEntity <|-- Policy BaseEntity <|-- Payment BaseEntity <|-- Review
+                    BaseEntity <|-- Cancellation BaseEntity <|-- CancellationPolicy BaseEntity <|-- Penalty BaseEntity
+                    <|-- Wishlist BaseEntity <|-- WishlistItem User "1" -- "1" UserProfile User "1" -- "1"
+                    UserPreference User "1" -- "*" Booking User "1" -- "*" Wishlist User "1" -- "*" Payment User "1"
+                    -- "*" Review Booking "1" -- "1" BookingGuest Booking "1" -- "1" BookingNote Booking "1" -- "0..1"
+                    Cancellation Booking "1" -- "*" Review Booking "*" -- "1" Room Booking "1" -- "1" Payment Room "1"
+                    -- "1" RoomPolicy Room "1" -- "*" RoomAmenity Room "*" -- "1" RoomType Room "*" -- "1" Information
+                    Room "1" -- "*" Review Information "1" -- "1" Contact Information "1" -- "1" Policy Information "1"
+                    -- "*" Room Information "1" -- "*" Review Review "*" -- "1" User Review "*" -- "1" Booking
+                    Review "*" -- "1" Room Review "*" -- "1" Information Cancellation "*" -- "1" CancellationPolicy
+                    Cancellation "1" -- "*" Penalty Wishlist "1" -- "*" WishlistItem WishlistItem "*" -- "1" Room </div>
+                    <div class="legend">
+                        <h3>📌 Ghi chú</h3>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <strong>#</strong> - Protected (protected access)
+                            </div>
+                            <div class="legend-item">
+                                <strong>-</strong> - Private (private access)
+                            </div>
+                            <div class="legend-item">
+                                <strong>*</strong> - Required field (not null)
+                            </div>
+                            <div class="legend-item">
+                                <strong>&lt;|--</strong> - Inheritance
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <!-- Domains Tab -->
+            <div id="domains" class="content">
+                <div class="info-box">
+                    <strong>ℹ️ Thông tin:</strong> Hệ thống được chia thành 5 domain (lĩnh vực) chính
+                </div>
+                <div class="domain-grid">
+                    <div class="domain-card">
+                        <h3>👤 User Management</h3>
+                        <ul>
+                            <li><strong>User</strong> - Người dùng chính</li>
+                            <li><strong>UserProfile</strong> - Thông tin cá nhân</li>
+                            <li><strong>UserPreference</strong> - Tùy chọn người dùng</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Quản lý thông tin, role, trạng thái người dùng và các tùy chọn cá nhân
+                        </div>
+                    </div>
+
+                    <div class="domain-card">
+                        <h3>🛏️ Room Management</h3>
+                        <ul>
+                            <li><strong>Room</strong> - Phòng</li>
+                            <li><strong>RoomType</strong> - Loại phòng</li>
+                            <li><strong>RoomAmenity</strong> - Tiện nghi</li>
+                            <li><strong>RoomPolicy</strong> - Chính sách phòng</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Tất cả thông tin liên quan đến phòng, loại phòng, tiện nghi và chính sách
+                        </div>
+                    </div>
+
+                    <div class="domain-card">
+                        <h3>📅 Booking Management</h3>
+                        <ul>
+                            <li><strong>Booking</strong> - Đơn đặt phòng</li>
+                            <li><strong>BookingGuest</strong> - Thông tin khách</li>
+                            <li><strong>BookingNote</strong> - Ghi chú</li>
+                            <li><strong>Cancellation</strong> - Hủy đặt</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Quản lý toàn bộ quy trình đặt phòng, hủy và các ghi chú liên quan
+                        </div>
+                    </div>
+
+                    <div class="domain-card">
+                        <h3>💼 Property Information</h3>
+                        <ul>
+                            <li><strong>Information</strong> - Thông tin nhà hàng</li>
+                            <li><strong>Contact</strong> - Liên hệ</li>
+                            <li><strong>Policy</strong> - Chính sách</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Thông tin chi tiết về tài sản, liên hệ và chính sách hủy/check-in/check-out
+                        </div>
+                    </div>
+
+                    <div class="domain-card">
+                        <h3>💳 Payment & Review</h3>
+                        <ul>
+                            <li><strong>Payment</strong> - Thanh toán</li>
+                            <li><strong>Review</strong> - Đánh giá</li>
+                            <li><strong>Wishlist</strong> - Danh sách yêu thích</li>
+                            <li><strong>Penalty</strong> - Phí phạt</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Quản lý thanh toán, đánh giá, danh sách yêu thích và phí phạt
+                        </div>
+                    </div>
+
+                    <div class="domain-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <h3>🔧 Shared Infrastructure</h3>
+                        <ul>
+                            <li><strong>BaseEntity</strong> - Lớp cơ sở</li>
+                            <li><strong>Enumerations</strong> - Các kiểu liệt kê</li>
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 0.9em; opacity: 0.8;">
+                            Lớp cơ sở cung cấp các trường audit (createdAt, updatedAt, v.v.)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Entities Tab -->
+            <div id="entities" class="content">
+                <div class="info-box">
+                    <strong>ℹ️ Thông tin:</strong> Danh sách chi tiết tất cả các Entity trong hệ thống
+                </div>
+                <div style="margin-top: 20px;">
+                    <h3>📊 Tổng cộng: 20 Entities</h3>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                        <thead>
+                            <tr style="background: #667eea; color: white;">
+                                <th style="padding: 12px; text-align: left;">Entity</th>
+                                <th style="padding: 12px; text-align: left;">Domain</th>
+                                <th style="padding: 12px; text-align: left;">Mô tả</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>User</strong></td>
+                                <td style="padding: 12px;">User Management</td>
+                                <td style="padding: 12px;">Người dùng chính của hệ thống</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>UserProfile</strong></td>
+                                <td style="padding: 12px;">User Management</td>
+                                <td style="padding: 12px;">Thông tin cá nhân (tên, CMND, avatar)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>UserPreference</strong></td>
+                                <td style="padding: 12px;">User Management</td>
+                                <td style="padding: 12px;">Tùy chọn người dùng (ngôn ngữ, tiền tệ)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>Room</strong></td>
+                                <td style="padding: 12px;">Room Management</td>
+                                <td style="padding: 12px;">Phòng với số hiệu, tầng, giá</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>RoomType</strong></td>
+                                <td style="padding: 12px;">Room Management</td>
+                                <td style="padding: 12px;">Loại phòng (Single, Double, Suite)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>RoomAmenity</strong></td>
+                                <td style="padding: 12px;">Room Management</td>
+                                <td style="padding: 12px;">Tiện nghi trong phòng (WiFi, TV, AC)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>RoomPolicy</strong></td>
+                                <td style="padding: 12px;">Room Management</td>
+                                <td style="padding: 12px;">Chính sách quy định cho phòng</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>Booking</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Đơn đặt phòng với check-in/check-out</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>BookingGuest</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Thông tin khách tham dự</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>BookingNote</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Ghi chú cho đơn đặt</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>Cancellation</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Thông tin hủy đơn đặt</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>CancellationPolicy</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Chính sách hủy đặt</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>Penalty</strong></td>
+                                <td style="padding: 12px;">Booking Management</td>
+                                <td style="padding: 12px;">Phí phạt khi hủy</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>Information</strong></td>
+                                <td style="padding: 12px;">Property Information</td>
+                                <td style="padding: 12px;">Thông tin nhà/khách sạn</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>Contact</strong></td>
+                                <td style="padding: 12px;">Property Information</td>
+                                <td style="padding: 12px;">Thông tin liên hệ</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>Policy</strong></td>
+                                <td style="padding: 12px;">Property Information</td>
+                                <td style="padding: 12px;">Chính sách check-in/out, hủy</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>Payment</strong></td>
+                                <td style="padding: 12px;">Payment & Review</td>
+                                <td style="padding: 12px;">Thông tin thanh toán</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>Review</strong></td>
+                                <td style="padding: 12px;">Payment & Review</td>
+                                <td style="padding: 12px;">Đánh giá phòng/nhà hàng (1-5 sao)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0;">
+                                <td style="padding: 12px;"><strong>Wishlist</strong></td>
+                                <td style="padding: 12px;">Payment & Review</td>
+                                <td style="padding: 12px;">Danh sách yêu thích</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e0e0e0; background: #f9f9f9;">
+                                <td style="padding: 12px;"><strong>WishlistItem</strong></td>
+                                <td style="padding: 12px;">Payment & Review</td>
+                                <td style="padding: 12px;">Phòng trong danh sách yêu thích</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>Domain Model - Hệ thống Đặt Phòng (Booking Room) | Generated: April 15, 2026</p>
+                <p>Tất cả entities kế thừa từ BaseEntity với các trường audit (createdAt, updatedAt, createdBy,
+                    updatedBy, isDeleted)</p>
+            </div>
+        </div>
+
+        <script>
+            function switchTab(tabName) {
+                // Hide all content
+                const contents = document.querySelectorAll('.content');
+                contents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Remove active class from all buttons
+                const buttons = document.querySelectorAll('.tab-button');
+                buttons.forEach(button => {
+                    button.classList.remove('active');
+                });
+
+                // Show selected content
+                document.getElementById(tabName).classList.add('active');
+
+                // Add active class to clicked button
+                event.target.classList.add('active');
+
+                // Reinitialize Mermaid for the active tab
+                mermaid.contentLoaded();
+            }
+
+            // Initialize Mermaid
+            mermaid.initialize({ startOnLoad: true, theme: 'default', securityLevel: 'loose' });
+        </script>
+</body>
+
+</html>
