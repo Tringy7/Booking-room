@@ -1,5 +1,10 @@
 package com.booking.booking_room.controller.auth;
 
+import com.booking.booking_room.dto.auth.*;
+import com.booking.booking_room.entity.user.User;
+import com.booking.booking_room.exception.CommonException;
+import com.booking.booking_room.exception.CustomException;
+import com.booking.booking_room.util.SecurityUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,16 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 
 import com.booking.booking_room.annotation.ApiMessage;
-import com.booking.booking_room.dto.auth.LoginRequest;
-import com.booking.booking_room.dto.auth.LoginResponse;
-import com.booking.booking_room.dto.auth.RegisterRequest;
-import com.booking.booking_room.dto.auth.RegisterResponse;
 import com.booking.booking_room.service.auth.AuthService;
 
 import jakarta.validation.Valid;
@@ -29,6 +28,7 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
+    private final SecurityUtil securityUtil;
 
     @PostMapping("/register")
     @ApiMessage("Register successful")
@@ -51,5 +51,25 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, this.authService.getCookie(loginRes.getRefreshToken()).toString())
                 .body(loginRes);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenResponse> refresh(@CookieValue(name = "refresh-Token", defaultValue = "hehe") String refreshToken) throws Exception {
+        if (refreshToken.equals("hehe")) {
+            throw new CommonException("Not refreshed token");
+        }
+        Jwt decodeToken = this.securityUtil.verfifyRefreshToken(refreshToken);
+        String email = decodeToken.getSubject();
+
+        User currentUser = this.authService.getUserByRefreshTokenAndEmail(refreshToken, email);
+        if (currentUser == null) {
+            throw new CommonException("Invalid refresh token");
+        }
+
+        RefreshTokenResponse refreshTokenResponse = this.authService.handleRefreshToken(currentUser);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, this.authService.getCookie(refreshTokenResponse.getRefreshToken()).toString())
+                .body(refreshTokenResponse);
     }
 }

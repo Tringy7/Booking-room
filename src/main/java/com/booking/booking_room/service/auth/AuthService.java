@@ -1,5 +1,7 @@
 package com.booking.booking_room.service.auth;
 
+import com.booking.booking_room.dto.auth.RefreshTokenResponse;
+import com.booking.booking_room.repository.UserRepository;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,16 +33,21 @@ public class AuthService {
         String accessToken = this.securityUtil.createAccessToken(user);
         String refreshToken = this.securityUtil.createRefreshToken(user);
 
-        User userRes = User.builder()
+        user.setRefreshToken(refreshToken);
+        user = this.userService.updateUser(user);
+
+        LoginResponse loginResponse = new LoginResponse();
+        LoginResponse.UserRequest  userRequest = LoginResponse.UserRequest.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .status(user.getUserStatus())
                 .phone(user.getPhone())
+                .role(user.getRole())
                 .build();
+        loginResponse.setUser(userRequest);
+        loginResponse.setAccessToken(accessToken);
 
-        user.setRefreshToken(refreshToken);
-        this.userService.updateUser(user);
-
-        return new LoginResponse(accessToken, refreshToken, userRes);
+        return loginResponse;
     }
 
     public ResponseCookie getCookie(String refreshToken) {
@@ -70,5 +77,18 @@ public class AuthService {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhone())
                 .build();
+    }
+
+    public User getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        return userService.getUserByRefreshTokenAndEmail(refreshToken, email);
+    }
+
+    public RefreshTokenResponse handleRefreshToken(User user) {
+        String accessToken = this.securityUtil.createAccessToken(user);
+        String refreshToken = this.securityUtil.createRefreshToken(user);
+
+        user.setRefreshToken(refreshToken);
+        this.userService.updateUser(user);
+        return new RefreshTokenResponse(accessToken, refreshToken);
     }
 }

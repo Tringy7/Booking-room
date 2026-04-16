@@ -1,8 +1,8 @@
 package com.booking.booking_room.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import jakarta.persistence.PrePersist;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -43,4 +43,9 @@ public class BaseEntity {
 
     @Column(name = "is_deleted", nullable = true)
     private Boolean isDeleted;
+
+    @PrePersist
+    public void handlePrePersist() {
+        isDeleted = Boolean.FALSE;
+    }
 }

@@ -42,7 +42,7 @@ public class SecurityUtil {
     }
 
     // HEADER
-    public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
+    public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS256;
 
     public String createAccessToken(User user){
         Instant now = Instant.now();
@@ -64,7 +64,7 @@ public class SecurityUtil {
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(user.getEmail())
-                .claim("authoritie", authoritie)
+                .claim("authorities", authoritie)
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
 

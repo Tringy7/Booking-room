@@ -31,4 +31,9 @@ public class UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
+
+    public User getUserByRefreshTokenAndEmail(String refreshToken, String email) {
+        return userRepository.findByRefreshTokenAndEmail(refreshToken, email)
+                .orElseThrow(() -> new EntityNotFoundException(Common.USER_NOT_FOUND));
+    }
 }
