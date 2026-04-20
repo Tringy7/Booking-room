@@ -1,6 +1,7 @@
 package com.booking.booking_room.service.auth;
 
 import com.booking.booking_room.dto.auth.RefreshTokenResponse;
+import com.booking.booking_room.enumerate.user.Provider;
 import com.booking.booking_room.repository.UserRepository;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -43,6 +44,30 @@ public class AuthService {
                 .status(user.getUserStatus())
                 .phone(user.getPhone())
                 .role(user.getRole())
+                .provider(user.getProvider())
+                .build();
+        loginResponse.setUser(userRequest);
+        loginResponse.setAccessToken(accessToken);
+
+        return loginResponse;
+    }
+
+    public LoginResponse handleGoogleAuthentication(String email) {
+        User user = this.userService.getUserByEmail(email);
+
+        String accessToken = this.securityUtil.createAccessToken(user);
+        String refreshToken = this.securityUtil.createRefreshToken(user);
+
+        user.setRefreshToken(refreshToken);
+        user = this.userService.updateUser(user);
+
+        LoginResponse loginResponse = new LoginResponse();
+        LoginResponse.UserRequest  userRequest = LoginResponse.UserRequest.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .status(user.getUserStatus())
+                .role(user.getRole())
+                .provider(user.getProvider())
                 .build();
         loginResponse.setUser(userRequest);
         loginResponse.setAccessToken(accessToken);
@@ -69,6 +94,7 @@ public class AuthService {
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .phone(registerRequest.getPhone())
                 .role(UserRole.USER)
+                .provider(Provider.LOCAL)
                 .build();
         user = this.userService.saveUser(user);
 

@@ -3,6 +3,9 @@ package com.booking.booking_room.config;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.booking.booking_room.service.auth.CustomOAuth2UserService;
+import com.booking.booking_room.service.auth.OAuth2SuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +24,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.booking.booking_room.util.SecurityUtil;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.util.Base64;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Value("${jwt.base64-secret}")
@@ -33,19 +38,48 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String[] whiteLists = {
-            "/auth/login", "/auth/register"
+            "/auth/login", "/auth/register", "/auth/google"
         };
 
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                .requestMatchers(whiteLists).permitAll()
                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        // Endpoint bắt đầu login
+                        // Truy cập: GET /auth/google/login
+                        .authorizationEndpoint(auth -> auth
+                                .baseUri("/auth/google/login")
+                        )
+                        // Endpoint Google redirect về sau khi login
+                        .redirectionEndpoint(redir -> redir
+                                .baseUri("/auth/google/callback")
+                        )
+                        // Service xử lý thông tin user từ Google
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        // Xử lý sau khi login thành công
+                        .successHandler(oAuth2SuccessHandler)
+
+                        // Xử lý khi login thất bại
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json");
+                            response.getWriter()
+                                    .write("{\"error\": \"Login failed: "
+                                            + exception.getMessage() + "\"}");
+                        })
                 );
         return http.build();
     }

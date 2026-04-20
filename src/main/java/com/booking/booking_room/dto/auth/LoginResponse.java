@@ -1,6 +1,7 @@
 package com.booking.booking_room.dto.auth;
 
 import com.booking.booking_room.entity.user.User;
+import com.booking.booking_room.enumerate.user.Provider;
 import com.booking.booking_room.enumerate.user.UserRole;
 import com.booking.booking_room.enumerate.user.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,5 +27,6 @@ public class LoginResponse {
         private String phone;
         private UserRole role;
         private UserStatus status;
+        private Provider provider;
     }
 }

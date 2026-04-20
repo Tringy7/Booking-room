@@ -36,13 +36,11 @@ public class Wishlist extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
     private String name;
 
     @Column(length = 500)
     private String description;
 
-    @Column(nullable = false)
     private Integer itemCount;
 
     @OneToMany(mappedBy = "wishlist")

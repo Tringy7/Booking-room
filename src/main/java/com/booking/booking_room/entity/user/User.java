@@ -6,6 +6,7 @@ import com.booking.booking_room.entity.BaseEntity;
 import com.booking.booking_room.entity.booking.Booking;
 import com.booking.booking_room.entity.booking.Review;
 import com.booking.booking_room.entity.payment.Payment;
+import com.booking.booking_room.enumerate.user.Provider;
 import com.booking.booking_room.enumerate.user.UserRole;
 import com.booking.booking_room.enumerate.user.UserStatus;
 
@@ -31,9 +32,9 @@ public class User extends BaseEntity {
     private Long id;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false, length = 1000)
+//    @Column(nullable = false, length = 1000)
     private String password;
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String phone;
     @Column(length = 1000)
     @JsonIgnore
@@ -60,4 +61,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Payment> payments;
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 }
