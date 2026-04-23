@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class CustomException {
-    @ExceptionHandler(CommonException.class)
-    public ResponseEntity<RestResponse<Object>> handleCommonException(CommonException customExceptionCommon) {
+public class GlobalException {
+    @ExceptionHandler({
+            CommonException.class, VerificationException.class
+    })
+    public ResponseEntity<RestResponse<Object>> handleCommonException(RuntimeException runtimeException) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError("Exception occur...");
-        res.setMessage(customExceptionCommon.getMessage());
+        res.setMessage(runtimeException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 

@@ -24,6 +24,7 @@ public class LoginResponse {
     public static class UserRequest {
         private Long id;
         private String email;
+        private String name;
         private String phone;
         private UserRole role;
         private UserStatus status;

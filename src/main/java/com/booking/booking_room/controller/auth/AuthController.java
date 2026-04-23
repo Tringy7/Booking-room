@@ -72,10 +72,4 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, this.authService.getCookie(refreshTokenResponse.getRefreshToken()).toString())
                 .body(refreshTokenResponse);
     }
-
-//    @PostMapping("/google/login")
-
-
-//    @PostMapping("/google/callback")
-    
 }

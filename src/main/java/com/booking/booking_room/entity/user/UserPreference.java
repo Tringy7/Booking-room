@@ -27,8 +27,9 @@ public class UserPreference extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private boolean isEmailVerified;
-    private boolean isPhoneVerified;
+    private boolean isEmail;
+    private Boolean isEmailVerified;
+    private Boolean isPhoneVerified;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
