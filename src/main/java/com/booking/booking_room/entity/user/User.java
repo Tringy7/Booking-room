@@ -41,13 +41,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
+    private boolean isEmailVerified;
+    private boolean isPhoneVerified;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;;
     @OneToOne(mappedBy = "user")
     private UserProfile userProfile;
-    @OneToOne(mappedBy = "user")
-    private UserPreference userPreference;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Booking> booking;

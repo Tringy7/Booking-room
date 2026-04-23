@@ -1,10 +1,12 @@
 package com.booking.booking_room.controller.auth;
 
+import java.util.Map;
+
 import com.booking.booking_room.dto.auth.*;
 import com.booking.booking_room.entity.user.User;
 import com.booking.booking_room.exception.CommonException;
-import com.booking.booking_room.exception.CustomException;
 import com.booking.booking_room.util.SecurityUtil;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,5 +73,20 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, this.authService.getCookie(refreshTokenResponse.getRefreshToken()).toString())
                 .body(refreshTokenResponse);
+    }
+
+    @PostMapping("/google")
+    @ApiMessage("Login with Google successfully")
+    public ResponseEntity<LoginResponse> loginWithGoogle(@RequestBody Map<String, String> request) {
+        String idTokenString = request.get("token");
+        try {
+            LoginResponse response = this.authService.handleGoogleLogin(idTokenString);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE,
+                            this.authService.getCookie(response.getRefreshToken()).toString())
+                    .body(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 }

@@ -36,14 +36,14 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String[] whiteLists = {
-            "/auth/login", "/auth/register"
+            "/auth/login", "/auth/register", "/auth/google"
         };
 
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/login", "/auth/register").permitAll()
+                .requestMatchers(whiteLists).permitAll()
                 .anyRequest().authenticated())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                 );
