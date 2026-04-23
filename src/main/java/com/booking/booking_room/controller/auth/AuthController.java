@@ -1,10 +1,13 @@
 package com.booking.booking_room.controller.auth;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import com.booking.booking_room.dto.auth.*;
 import com.booking.booking_room.entity.user.User;
 import com.booking.booking_room.exception.CommonException;
+import com.booking.booking_room.service.otp.OTPService;
 import com.booking.booking_room.util.SecurityUtil;
 
 import org.springframework.http.HttpHeaders;
@@ -30,6 +33,7 @@ public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final AuthService authService;
+    private final OTPService otpService;
     private final SecurityUtil securityUtil;
 
     @PostMapping("/register")
@@ -88,5 +92,17 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @PostMapping("/token")
+    @ApiMessage("Send token for email user")
+    public ResponseEntity<Map<String, Object>> createEmailVerifyToken(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        CompletableFuture<Boolean> res =  this.otpService.sendOTPByEmail(email);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "OTP is being sent");
+
+        return ResponseEntity.ok(response);
     }
 }
