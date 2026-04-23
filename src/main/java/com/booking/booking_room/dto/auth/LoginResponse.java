@@ -28,6 +28,5 @@ public class LoginResponse {
         private String phone;
         private UserRole role;
         private UserStatus status;
-        private Provider provider;
     }
 }
