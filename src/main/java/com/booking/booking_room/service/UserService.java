@@ -48,4 +48,10 @@ public class UserService {
         return userRepository.findByRefreshTokenAndEmail(refreshToken, email)
                 .orElseThrow(() -> new EntityNotFoundException(Common.USER_NOT_FOUND));
     }
+
+    public void verifyEmail(String email) {
+        User user = getUserByEmail(email);
+        user.setEmailVerified(true);
+        userRepository.save(user);
+    }
 }

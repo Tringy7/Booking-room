@@ -105,4 +105,17 @@ public class AuthController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<Map<String, Object>> confirmCodeFromGmail(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String code = request.get("code");
+
+        this.otpService.checkCodeOTP(email, code);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "success");
+
+        return ResponseEntity.ok(response);
+    }
 }
