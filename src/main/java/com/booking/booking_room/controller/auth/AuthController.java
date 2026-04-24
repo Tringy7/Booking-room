@@ -10,8 +10,11 @@ import com.booking.booking_room.exception.CommonException;
 import com.booking.booking_room.service.otp.OTPService;
 import com.booking.booking_room.util.SecurityUtil;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -117,5 +120,21 @@ public class AuthController {
         response.put("message", "success");
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    @ApiMessage("Log out")
+    public ResponseEntity<Void> logout() {
+        if (!this.securityUtil.getCurrentUserLogin().isPresent()) {
+            throw new EntityNotFoundException("Not exist email");
+
+        }
+        String email = this.securityUtil.getCurrentUserLogin().get();
+        this.authService.handleLogout(email);
+
+        return  ResponseEntity
+                .ok()
+                .header(HttpHeaders.SET_COOKIE, this.authService.deleteCookie().toString())
+                .build();
     }
 }

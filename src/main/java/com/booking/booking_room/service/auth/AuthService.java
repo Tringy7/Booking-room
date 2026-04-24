@@ -66,6 +66,15 @@ public class AuthService {
                 .build();
     }
 
+    public ResponseCookie deleteCookie() {
+        return ResponseCookie.from("refresh-Token", null)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+    }
+
     public RegisterResponse handleRegister(RegisterRequest registerRequest) {
         if (this.userService.checkExistUser(registerRequest.getEmail())) {
             throw new EntityExistsException(Common.USER_EXISTS);
@@ -144,5 +153,11 @@ public class AuthService {
         loginResponse.setAccessToken(accessToken);
 
         return loginResponse;
+    }
+
+    public void handleLogout(String email) {
+        User user = this.userService.getUserByEmail(email);
+        user.setRefreshToken(null);
+        this.userService.updateUser(user);
     }
 }
