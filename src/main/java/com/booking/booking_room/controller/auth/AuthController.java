@@ -82,6 +82,7 @@ public class AuthController {
                 .body(refreshTokenResponse);
     }
 
+    // Login by google
     @PostMapping("/google")
     @ApiMessage("Login with Google successfully")
     public ResponseEntity<LoginResponse> loginWithGoogle(@RequestBody Map<String, String> request) {
@@ -97,6 +98,7 @@ public class AuthController {
         }
     }
 
+    // Send otp by gmail
     @PostMapping("/token")
     @ApiMessage("Send token for email user")
     public ResponseEntity<Map<String, Object>> createEmailVerifyToken(@RequestBody Map<String, String> request) {
@@ -109,6 +111,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // Confirm otp
     @PostMapping("/confirm")
     public ResponseEntity<Map<String, Object>> confirmCodeFromGmail(@RequestBody Map<String, String> request) {
         String email = request.get("email");
