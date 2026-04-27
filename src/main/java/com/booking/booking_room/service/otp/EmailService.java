@@ -1,6 +1,6 @@
 package com.booking.booking_room.service.otp;
 
-import com.booking.booking_room.config.Common;
+import com.booking.booking_room.config.system.Common;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;

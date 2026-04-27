@@ -1,4 +1,4 @@
-package com.booking.booking_room.config;
+package com.booking.booking_room.config.system;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Configuration;

@@ -3,11 +3,8 @@ package com.booking.booking_room.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.booking.booking_room.config.Common;
-import com.booking.booking_room.dto.auth.GoogleUserInfo;
+import com.booking.booking_room.config.system.Common;
 import com.booking.booking_room.entity.user.User;
-import com.booking.booking_room.enumerate.user.UserRole;
-import com.booking.booking_room.enumerate.user.UserStatus;
 import com.booking.booking_room.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;

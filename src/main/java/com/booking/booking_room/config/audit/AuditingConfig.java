@@ -1,4 +1,4 @@
-package com.booking.booking_room.config;
+package com.booking.booking_room.config.audit;
 
 import java.util.Optional;
 

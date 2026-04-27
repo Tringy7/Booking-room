@@ -2,14 +2,13 @@ package com.booking.booking_room.service.auth;
 
 import com.booking.booking_room.entity.user.UserProfile;
 import com.booking.booking_room.enumerate.user.Provider;
-import com.booking.booking_room.enumerate.user.UserStatus;
 import com.booking.booking_room.service.UserProfileService;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.booking.booking_room.config.Common;
+import com.booking.booking_room.config.system.Common;
 import com.booking.booking_room.dto.auth.GoogleUserInfo;
 import com.booking.booking_room.dto.auth.LoginResponse;
 import com.booking.booking_room.dto.auth.RefreshTokenResponse;

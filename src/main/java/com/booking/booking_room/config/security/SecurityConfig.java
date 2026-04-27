@@ -1,4 +1,4 @@
-package com.booking.booking_room.config;
+package com.booking.booking_room.config.security;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
