@@ -1,4 +1,4 @@
-package com.booking.booking_room.service;
+package com.booking.booking_room.service.user;
 
 import com.booking.booking_room.entity.user.UserProfile;
 import com.booking.booking_room.repository.UserProfileRepository;

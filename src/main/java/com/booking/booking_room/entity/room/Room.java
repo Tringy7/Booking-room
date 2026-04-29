@@ -59,14 +59,4 @@ public class Room extends BaseEntity {
 
     @OneToMany(mappedBy = "room")
     private List<Review> reviews;
-
-    @PrePersist
-    public void prePersist() {
-        if (this.lastCleanedAt == null) {
-            this.lastCleanedAt = LocalDateTime.now();
-        }
-        if (this.roomStatus == null) {
-            this.roomStatus = RoomStatus.AVAILABLE;
-        }
-    }
 }

@@ -48,11 +48,11 @@ public class Review extends BaseEntity {
     private User reviewer;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = true)
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "information_id", nullable = true)
+    @JoinColumn(name = "information_id", nullable = false)
     private Information information;
 
     @Column(nullable = false)
@@ -67,19 +67,9 @@ public class Review extends BaseEntity {
     private String comment;
 
     @Column(nullable = false)
-    private LocalDateTime reviewDate;
+    private LocalDateTime reviewDate =  LocalDateTime.now();
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ReviewStatus status;
-
-    @Column(nullable = false)
-    private Integer helpfulCount;
-
-    @Column(nullable = false)
-    private Integer unhelpfulCount;
-
-    private String response;
-
-    private LocalDateTime responseDate;
 }

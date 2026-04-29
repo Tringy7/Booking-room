@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.booking.booking_room.service.UserService;
+import com.booking.booking_room.service.user.UserService;
 
 import lombok.AllArgsConstructor;
 
