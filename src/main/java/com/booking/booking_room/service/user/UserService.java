@@ -1,4 +1,4 @@
-package com.booking.booking_room.service;
+package com.booking.booking_room.service.user;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -48,7 +48,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         String[] whiteLists = {
-            "/auth", "/auth/*"
+            "/auth", "/auth/*", "/hotel", "/hotel/*"
         };
 
         http

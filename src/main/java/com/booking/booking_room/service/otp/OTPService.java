@@ -3,13 +3,12 @@ package com.booking.booking_room.service.otp;
 import com.booking.booking_room.entity.otp.OTPInfo;
 import com.booking.booking_room.exception.VerificationException;
 import com.booking.booking_room.repository.OTPInfoRepository;
-import com.booking.booking_room.service.UserService;
+import com.booking.booking_room.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 

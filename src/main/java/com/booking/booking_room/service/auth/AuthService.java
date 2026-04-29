@@ -2,7 +2,7 @@ package com.booking.booking_room.service.auth;
 
 import com.booking.booking_room.entity.user.UserProfile;
 import com.booking.booking_room.enumerate.user.Provider;
-import com.booking.booking_room.service.UserProfileService;
+import com.booking.booking_room.service.user.UserProfileService;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +16,7 @@ import com.booking.booking_room.dto.auth.RegisterRequest;
 import com.booking.booking_room.dto.auth.RegisterResponse;
 import com.booking.booking_room.entity.user.User;
 import com.booking.booking_room.enumerate.user.UserRole;
-import com.booking.booking_room.service.UserService;
+import com.booking.booking_room.service.user.UserService;
 import com.booking.booking_room.util.SecurityUtil;
 
 import jakarta.persistence.EntityExistsException;
